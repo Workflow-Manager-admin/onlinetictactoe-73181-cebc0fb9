@@ -51,14 +51,23 @@ body {
 }
 
 /* Board wrapper */
+/* Improved 3D Board Style */
 .ttt-board {
-  background: var(--ttt-board-bg);
+  background: linear-gradient(135deg, #eedba3 70%, #e6c78e 100%);
   border-radius: var(--ttt-radius);
   border: var(--ttt-board-border-width) solid var(--ttt-board-border);
-  box-shadow: 0 2px 14px 0 rgba(100,70,30,0.08);
+  /* Soft wood 3D: layered shadow and inner highlight */
+  box-shadow:
+    0 7px 48px 0 rgba(120,90,38,0.17),   /* main board drop shadow */
+    0 2px 14px 0 rgba(100,70,30,0.09),   /* secondary diffuse */
+    0 1.5px 0 0 #e3c282 inset,           /* subtle highlight upper left */
+    0 -7px 23px -12px #a68a52 inset      /* warm inner bottom shadow for depth */;
   padding: var(--ttt-board-padding);
   display: inline-block;
   margin-bottom: 1.7rem;
+  /* Slight 3D illusion tip */
+  transform: perspective(900px) rotateX(1.2deg);
+  transition: box-shadow 0.18s, transform 0.13s;
 }
 
 @media (max-width: 480px) {
@@ -87,8 +96,9 @@ body {
 }
 
 /* Cell styles and grid lines */
+/* 3D Effect on Cell: subtle bevel, light glossy finish */
 .ttt-cell {
-  background: transparent;
+  background: linear-gradient(145deg, #f7e4b8 70%, #e6cc8e 100%);
   border: none;
   padding: var(--ttt-cell-padding);
   box-sizing: border-box;
@@ -102,18 +112,56 @@ body {
   cursor: pointer;
   /* Remove outline highlight, custom focus style below */
   outline: none;
+  /* 3D: Inset top highlight, drop shadow bottom right, cell looks raised */
+  box-shadow:
+    0 1.5px 2.5px rgba(180,140,60, 0.13),
+    0 4.5px 12px 0 rgba(160,120,60, .09),
+    0 1px 0 0 #fbeec3 inset,        /* upper highlight 'shine' */
+    0 -4px 8px 0 #ccb06d inset;     /* bottom inset shadow for depth */
+  /* Smooth shape on user interaction */
+  border-radius: 16px;
+  transition: box-shadow 0.16s, background 0.13s, transform 0.14s;
 }
 
 .ttt-cell:disabled {
   cursor: not-allowed;
   opacity: 0.6;
+  filter: grayscale(8%) brightness(0.96);
+}
+
+/* Press effect - interactive depression */
+.ttt-cell:active:not(:disabled) {
+  box-shadow:
+    0 1px 2px rgba(180,140,60, 0.11),
+    0 2.5px 6px 0 rgba(160,120,60, .07),
+    0 1.5px 0 0 #e9c882 inset,
+    0 7px 20px 0 #ccb06d inset;
+  background: linear-gradient(135deg, #ecd190 70%, #e6c78e 100%);
+  transform: scale(0.98) perspective(320px) rotateX(3.5deg);
+}
+
+/* Focus effect for accessibility - 3D ring/halo */
+.ttt-cell:focus-visible {
+  box-shadow:
+    0 0 0 3px #F2CE95aa,
+    0 1.5px 2.5px rgba(180,140,60, 0.13),
+    0 4.5px 12px 0 rgba(160,120,60, .09),
+    0 1px 0 0 #fbeec3 inset,
+    0 -4px 8px 0 #ccb06d inset;
+  z-index: 2;
 }
 
 /* Add grid lines (borders) for cells, except last row/col */
+/* These lines now have faux-inset for depth */
 .ttt-cell {
   border-right: var(--ttt-grid-line-width) solid var(--ttt-grid-line);
   border-bottom: var(--ttt-grid-line-width) solid var(--ttt-grid-line);
+  /* Inset shadow on grid lines for 3D groove effect */
+  box-shadow:
+    1px 0 5px 0 #d6ab734d inset,    /* right highlight */
+    0 1.5px 0 #c19854cc inset;      /* bottom shadow */
 }
+
 .ttt-cell:nth-child(3),
 .ttt-cell:nth-child(6),
 .ttt-cell:nth-child(9) { border-right: none; }
@@ -129,7 +177,7 @@ body {
 
 /*--- X and O symbols ---*/
 
-/* Shared symbol base */
+/* Shared symbol base, now more 3D and tactile */
 .ttt-x, .ttt-o {
   display: flex;
   align-items: center;
@@ -138,31 +186,43 @@ body {
   height: 100%;
   user-select: none;
   pointer-events: none;
+  /* Subtle drop-shadow to "float" off cell */
+  filter: drop-shadow(0 4px 6px rgba(180,61,0,0.08)) drop-shadow(0 0.5px 1.5px #65321433);
 }
 
-/* X shape styles */
+/* X shape styles: 3D with inner shadow and a highlight */
 .ttt-x svg {
   width: 96%;
   height: 96%;
   display: block;
+  filter: drop-shadow(0 2px 6px #f8791c33) drop-shadow(0 2px 17px #ef682444);
 }
 .ttt-x line {
   stroke: var(--ttt-x-color);
   stroke-width: 20;
   stroke-linecap: round;
+  /* Faux "3D bevel" using paint-order + shadow below for highlight */
+  filter: drop-shadow(0 -2px 7px #ffe9ca70);
+  paint-order: stroke fill markers;
 }
 
-/* O shape styles */
+/* O shape styles: thick 3D rim, shadow, and glossy highlight layer */
 .ttt-o svg {
   width: 96%;
   height: 96%;
   display: block;
+  filter: drop-shadow(0 2px 7px #1b1b1b44) drop-shadow(0 1px 10px #2a220d33);
 }
 .ttt-o ellipse {
   stroke: var(--ttt-o-color);
   stroke-width: 23;
   fill: none;
+  /* Slight outer and highlight via filter */
+  filter: drop-shadow(0 -2px 8px #fff6de33) drop-shadow(0 1px 6px #a088594c);
 }
+
+/* Subtle 3D-mark glow on win/draw (for future, keeps style consistent) */
+/* .ttt-x.win, .ttt-o.win { filter: drop-shadow(0 0 12px #51f11473); } */
 
 /* Board and symbol scaling */
 @media (max-width: 400px) {
@@ -170,6 +230,20 @@ body {
   .ttt-grid { width: 97vw; }
   .game-status { font-size: .99rem; }
 }
+
+/* 3D subtle hover-lift for tactile feel */
+.ttt-cell:not(:disabled):hover,
+.ttt-cell:not(:disabled):focus-visible {
+  background: linear-gradient(135deg, #fae9be 40%, #f5d78e 100%);
+  box-shadow:
+    0 2.5px 16px 0 #914a1235,
+    0 12px 28px -12px #dca03533,
+    0 1.5px 0 0 #fbeec3 inset,
+    0 -7px 21px 0 #c59c5f88 inset;
+  transform: scale(1.022) perspective(420px) rotateX(2deg);
+  z-index: 5;
+}
+
 
 .reset-btn {
   font-family: var(--ttt-font-main);
