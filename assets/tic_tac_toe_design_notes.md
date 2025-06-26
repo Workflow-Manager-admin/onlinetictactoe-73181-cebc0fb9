@@ -1,120 +1,123 @@
-# Tic Tac Toe Frontend Design Notes
+# Tic Tac Toe UI Design Notes (Based on Screenshot)
 
-## 1. Layout & Structure
+These notes capture all observed design details from the provided reference image. Use this information to re-style the Tic Tac Toe frontend for full visual fidelity.
 
-- **Board Structure:**
-  - 3x3 grid layout.
-  - Each cell is a perfect square and evenly sized.
-  - Small, consistent gaps (gutters) between the squares.
-  - All cells have slightly rounded corners (border-radius ~14px estimated).
-  - Overall square grid with consistent padding around the board.
+---
 
-- **Overall Alignment:**
-  - All elements are centrally aligned.
-  - The board background color visually contrasts with the cell colors for clear separation.
+## 1. **Overall Layout**
+- **Canvas/Board Shape:** Square with fully rounded corners.
+- **Board Border:** Board area has a clear, slightly darker beige border (~10-16px thick) with pronounced rounding (`border-radius`).
+- **Board Background:** Light tan/beige wood texture or flat color (`#EDD9B4`/`#EEDBA3`), very subtle shadow inner and/or outer.
 
-## 2. UI Components
+## 2. **Grid/Container**
+- **Grid:** 3x3 square cells, perfectly even.
+- **Cell Dividers:** Each grid line is distinct, moderately thick (~10px), colored a deeper beige/brown (`#B89C6A` or similar).
+- **Cell Spacing:** No empty margin between cells; grid lines are the only spacings. Cells are close, seamless except for grid lines.
 
-- **Grid Cells:**
-  - Each grid cell is a container that can be empty or display either an "X" or "O".
-  - "X" and "O" are visually prominent, filling most of the cell area.
-  - "X": Neon blue, thick strokes, slightly glowing effect.
-  - "O": Neon pink/red, thick strokes, glowing effect.
-  - Empty cells: Maintain same background as filled ones but without icon.
-  - On hover (speculative for modern UIs): Subtle brightness or shadow increase.
+## 3. **Symbol Design (X and O):**
+### X Shape
+- **Color:** Bright orange-red (`#F95A14` to `#EF4A24`).
+- **Size:** Fills almost the entire cell, leaving narrow padding (~5-10% of cell width).
+- **Weight/Thickness:** Each stroke of the X is thick, visually bold, matching about 18-23% of the cell width.
+- **Style:** Flat, not shadowed, wood-like if possible, but solid color is fine. Rounded stroke ends.
 
-- **No score, heading, or other visible UI in this screenshot:** Only the grid and game pieces are displayed.
+### O Shape
+- **Color:** Matte black.
+- **Weight:** Thick outer ring (about 20-25% of cell diameter is stroke thickness), with roundness preserved.
+- **Size:** Fills most of the cell, with the inner hole being about 50% of total O diameter.
+- **Style:** Flat black, solid color. Circular/oval, no square hints, bold thickness.
 
-## 3. Color Palette
+## 4. **Spacing & Measurements (Best Estimate)**
+- **Board Outer Padding/Margin:** ~10-12px outside the board border (board sits visually centered).
+- **Board Border Width:** 12-14px.
+- **Board Radius:** 20-30px (large, gives distinct rounded appearance).
+- **Grid Line (cell divider) Width:** ~9-12px.
+- **Cell Padding (for symbol):** ~8-10px inside each cell edge.
+- **Cell Size:** All cells are square, filling the board.
 
-- **Background:** Dark purple/blue gradient (`--bg-board: #250050` approximate).
-- **Cell:** Slightly lighter/darker than board, distinct yet harmonious (`--bg-cell: #391f5f` approximate).
-- **X Icon:** Electric/neon blue with glow (`--mark-x: #68b8ff` and `--mark-x-glow: #1fcae1`).
-- **O Icon:** Neon pink/red with glow (`--mark-o: #ff3eaf` and `--mark-o-glow: #ff7beb`).
-- **Cell Border:** None visible, all separation by gutter spacing.
-- **Gutter/Spacing:** Board padding and cell-to-cell gaps use underlying background color.
-
-## 4. Typography
-
-- No standard typography is present as the only text components are large "X" and "O" rendered as styled SVG/Canvas or large text. For fallback, use:
-  - Font Family: `'Helvetica Neue', Arial, sans-serif`
-  - Font Weight: Bold, approx 900
-  - Font Size: Fills ~80% of cell
-
-## 5. Spacing & Sizing
-
-- **Grid:** 3x3, each square equal size.
-- **Gap between squares:** Small, ~10% of cell size (can use `gap: 8px` or similar for grid layout).
-- **Padding:** Board area has internal padding; ensure board doesn't touch view boundaries.
-- **Border Radius:** Cell corner radius ~14px.
-
-## 6. Effects
-
-- **Neon Glow:** Both "X" and "O" are rendered with a glow/shadow effect in their respective colors (box-shadow or text-shadow for SVG/text).
-- **Cell Hover (recommended):** Slight increase in brightness or subtle shadow on hover, for interactivity.
-
-## 7. Responsive Design
-
-- The board should scale for various device widths, keeping exact 1:1 aspect ratio.
-- Max width: 90vw or 360px, whichever is smaller.
-- Grid cells flex or scale proportionally to fit container.
-
-## 8. Implementation Hints
-
-- Use CSS Grid to implement the 3x3 layout:
-  ```css
-  .board {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 8px;
-    background: var(--bg-board);
-    padding: 16px;
-    border-radius: 18px;
-    width: min(90vw, 360px);
-    aspect-ratio: 1 / 1;
-    margin: 0 auto;
-  }
-  .cell {
-    background: var(--bg-cell);
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
-    /* Add neon effect styles as below for X/O */
-  }
-  ```
-- Neon effects: Prefer SVG for icons, or use large bold text with strong text-shadow.
-
-## 9. CSS Variables Reference
-
+## 5. **Colors (Suggested CSS Variables)**
 ```css
 :root {
-  --bg-board: #250050;
-  --bg-cell: #391f5f;
-  --mark-x: #68b8ff;
-  --mark-x-glow: #1fcae1;
-  --mark-o: #ff3eaf;
-  --mark-o-glow: #ff7beb;
+  --ttt-board-bg: #EEDBA3;
+  --ttt-board-border: #B89C6A;
+  --ttt-grid-line: #B89C6A;
+  --ttt-x-color: #EF4A24;
+  --ttt-o-color: #1B1B1B;
 }
 ```
 
+## 6. **Typography**
+- No in-board text. If any game status appears elsewhere, use clean sans-serif (e.g., Helvetica Neue, Arial, sans-serif) and neutral/dark color for contrast.
+
+## 7. **Shadows**
+- Subtle outer board shadow optional, for depth, very subtle dark brown or warm gray.
+
+## 8. **Responsiveness**
+- The board and all grid/cell/symbols should scale together for smaller screens, with proportions, padding, and border-radius preserved.
+- Maintain square board aspect at all times.
+
+## 9. **Implementation Suggestions**
+- Use CSS Grid for the 3x3 layout.
+- Use `<svg>` or CSS for X and O: For full fidelity, SVG paths or absolutely centered flex items with sharp, thick lines.
+- Board in a centered container; padding applies above, below, left, right; background neutral, minimal distraction.
+
 ---
 
-### Component List
+### **Sample HTML/CSS Structure Sketch**
 
-- Board container: `.board`
-- Game cell: `.cell`
-- X and O mark: `.mark-x`, `.mark-o` (SVG or styled text within cell)
+```html
+<div class="ttt-board">
+  <div class="ttt-grid">
+    <div class="ttt-cell"> <span class="ttt-x"></span> </div>
+    <div class="ttt-cell"> <span class="ttt-o"></span> </div>
+    <!-- ... -->
+  </div>
+</div>
+```
+
+```css
+.ttt-board {
+  background: var(--ttt-board-bg);
+  border: 12px solid var(--ttt-board-border);
+  border-radius: 28px;
+  box-shadow: 0 2px 12px rgba(100,70,30,0.08);
+  display: inline-block;
+  padding: 8px;
+}
+
+.ttt-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0; /* Grid lines instead */
+  width: 384px; /* Adjustable/responsive */
+  aspect-ratio: 1/1;
+}
+
+.ttt-cell {
+  border-right: 10px solid var(--ttt-grid-line);
+  border-bottom: 10px solid var(--ttt-grid-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ttt-x {
+  color: var(--ttt-x-color);
+  font-size: 3.6rem;
+  font-weight: bold;
+  /* Or use inline-SVG */
+}
+
+.ttt-o {
+  color: var(--ttt-o-color);
+  font-size: 3.6rem;
+  font-weight: bold;
+  /* Or SVG circle */
+}
+```
+
+**Note:** Adjust gap, border, size, and coloring for perfect match. Consider using custom SVG for symbols if maximum fidelity is required.
 
 ---
 
-## 10. Summary
-
-- 3x3 neon-styled tic tac toe board.
-- Glowing "X" and "O" marks, each with distinctive color glows.
-- Modern, dark neon cyberpunk aesthetic.
-- Purely grid, no extra UI or score in this shot.
-- Use above variable palette, structure, and sizing for implementation.
-
+# End of Design Notes
