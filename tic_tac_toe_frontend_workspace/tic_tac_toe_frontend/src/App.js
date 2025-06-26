@@ -30,11 +30,14 @@ function calculateWinner(board) {
  */
 function XMark() {
   return (
-    <span className="ttt-x">
-      <svg viewBox="0 0 100 100" aria-label="X">
-        <line x1="15" y1="15" x2="85" y2="85" />
-        <line x1="85" y1="15" x2="15" y2="85" />
-      </svg>
+    <span className="ttt-x-outer">
+      <span className="ttt-x-glow" />
+      <span className="ttt-x">
+        <svg viewBox="0 0 100 100" aria-label="X">
+          <line x1="15" y1="15" x2="85" y2="85" />
+          <line x1="85" y1="15" x2="15" y2="85" />
+        </svg>
+      </span>
     </span>
   );
 }
@@ -45,10 +48,13 @@ function XMark() {
  */
 function OMark() {
   return (
-    <span className="ttt-o">
-      <svg viewBox="0 0 100 100" aria-label="O">
-        <ellipse cx="50" cy="50" rx="35" ry="35" />
-      </svg>
+    <span className="ttt-o-outer">
+      <span className="ttt-o-glow" />
+      <span className="ttt-o">
+        <svg viewBox="0 0 100 100" aria-label="O">
+          <ellipse cx="50" cy="50" rx="35" ry="35" />
+        </svg>
+      </span>
     </span>
   );
 }
