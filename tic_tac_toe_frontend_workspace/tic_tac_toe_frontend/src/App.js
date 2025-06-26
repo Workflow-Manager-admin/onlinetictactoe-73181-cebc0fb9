@@ -1,15 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
-
-// Neon style variables based on the design notes.
-const rootCSSVars = {
-  "--bg-board": "#250050",
-  "--bg-cell": "#391f5f",
-  "--mark-x": "#68b8ff",
-  "--mark-x-glow": "#1fcae1",
-  "--mark-o": "#ff3eaf",
-  "--mark-o-glow": "#ff7beb",
-};
 
 /**
  * Returns "X", "O", "Draw", or null (if game is ongoing)
@@ -36,129 +26,87 @@ function calculateWinner(board) {
 
 /**
  * PUBLIC_INTERFACE
- * Neon X SVG Component
+ * X SVG Component (bold orange-red with thick, rounded ends)
  */
-function NeonX() {
+function XMark() {
   return (
-    <svg
-      width="80%"
-      height="80%"
-      viewBox="0 0 100 100"
-      className="mark-x"
-      aria-label="X"
-    >
-      <g
-        style={{
-          filter:
-            "drop-shadow(0 0 6px var(--mark-x-glow)) drop-shadow(0 0 18px var(--mark-x-glow))",
-        }}
-      >
-        <line
-          x1="18"
-          y1="18"
-          x2="82"
-          y2="82"
-          stroke="var(--mark-x)"
-          strokeWidth="13"
-          strokeLinecap="round"
-        />
-        <line
-          x1="82"
-          y1="18"
-          x2="18"
-          y2="82"
-          stroke="var(--mark-x)"
-          strokeWidth="13"
-          strokeLinecap="round"
-        />
-      </g>
-    </svg>
+    <span className="ttt-x">
+      <svg viewBox="0 0 100 100" aria-label="X">
+        <line x1="15" y1="15" x2="85" y2="85" />
+        <line x1="85" y1="15" x2="15" y2="85" />
+      </svg>
+    </span>
   );
 }
 
 /**
  * PUBLIC_INTERFACE
- * Neon O SVG Component
+ * O SVG Component (thick, matte black, rounded)
  */
-function NeonO() {
+function OMark() {
   return (
-    <svg
-      width="80%"
-      height="80%"
-      viewBox="0 0 100 100"
-      className="mark-o"
-      aria-label="O"
-    >
-      <ellipse
-        cx="50"
-        cy="50"
-        rx="34"
-        ry="34"
-        fill="none"
-        stroke="var(--mark-o)"
-        strokeWidth="13"
-        filter="drop-shadow(0 0 6px var(--mark-o-glow)) drop-shadow(0 0 18px var(--mark-o-glow))"
-      />
-    </svg>
+    <span className="ttt-o">
+      <svg viewBox="0 0 100 100" aria-label="O">
+        <ellipse cx="50" cy="50" rx="35" ry="35" />
+      </svg>
+    </span>
   );
 }
 
 /**
  * PUBLIC_INTERFACE
- * Game Cell
+ * Cell for Tic Tac Toe (button for accessibility)
  */
 function Cell({ value, onClick, disabled }) {
-  let content = null;
-  if (value === "X") content = <NeonX />;
-  else if (value === "O") content = <NeonO />;
+  let child = null;
+  if (value === "X") child = <XMark />;
+  else if (value === "O") child = <OMark />;
   return (
     <button
-      className="cell"
+      className="ttt-cell"
       onClick={onClick}
-      disabled={!!value || disabled}
-      aria-label={value ? `Mark: ${value}` : "Empty cell"}
+      disabled={disabled || !!value}
+      aria-label={value ? `Mark: ${value}` : "Unmarked cell"}
       tabIndex={value ? -1 : 0}
       type="button"
     >
-      {content}
+      {child}
     </button>
   );
 }
 
 /**
  * PUBLIC_INTERFACE
- * TicTacToe Board
+ * Board (3x3 grid with thick grid dividers)
  */
 function Board({ board, onCellClick, gameOver }) {
   return (
-    <div className="board" role="grid" aria-label="Tic Tac Toe board">
-      {board.map((cell, idx) => (
-        <Cell
-          key={idx}
-          value={cell}
-          onClick={() => onCellClick(idx)}
-          disabled={gameOver}
-        />
-      ))}
+    <div className="ttt-board">
+      <div className="ttt-grid" role="grid" aria-label="Tic Tac Toe board">
+        {board.map((cell, idx) => (
+          <Cell
+            key={idx}
+            value={cell}
+            onClick={() => onCellClick(idx)}
+            disabled={gameOver}
+          />
+        ))}
+      </div>
     </div>
   );
 }
 
 /**
  * PUBLIC_INTERFACE
- * Status Display
+ * Game status at top
  */
 function GameStatus({ status }) {
-  return (
-    <div className="game-status">
-      <span>{status}</span>
-    </div>
-  );
+  return <div className="game-status">{status}</div>;
 }
 
 /**
  * PUBLIC_INTERFACE
- * Reset Button
+ * Reset Game button
  */
 function ResetButton({ onClick }) {
   return (
@@ -170,23 +118,15 @@ function ResetButton({ onClick }) {
 
 /**
  * PUBLIC_INTERFACE
- * Main App Component for Tic Tac Toe
+ * Main App component
  */
 function App() {
-  // Apply CSS variables for board theme
-  useEffect(() => {
-    Object.entries(rootCSSVars).forEach(([key, value]) => {
-      document.documentElement.style.setProperty(key, value);
-    });
-  }, []);
-
   const emptyBoard = Array(9).fill(null);
   const [board, setBoard] = useState(emptyBoard);
   const [isXNext, setIsXNext] = useState(true);
 
   const winner = calculateWinner(board);
-
-  let status;
+  let status = "";
   if (winner === "X") status = "Winner: X";
   else if (winner === "O") status = "Winner: O";
   else if (winner === "Draw") status = "Draw!";
@@ -206,32 +146,16 @@ function App() {
   }
 
   return (
-    <div
-      className="App neon-ttt"
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(120deg, #1d0036 0%, #250050 100%)",
-        color: "#fff",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-      }}
-    >
-      <main
-        style={{
-          width: "100vw",
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          paddingTop: "3vh",
-        }}
-      >
+    <div className="App">
+      <div className="ttt-center">
         <GameStatus status={status} />
-        <Board board={board} onCellClick={handleCellClick} gameOver={!!winner} />
+        <Board
+          board={board}
+          onCellClick={handleCellClick}
+          gameOver={!!winner}
+        />
         <ResetButton onClick={handleReset} />
-      </main>
+      </div>
     </div>
   );
 }
